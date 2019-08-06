@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+  <head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!--css goes here -->
+    <style type="text/css">
+      body{
+        margin:0px;
+        padding: 10%;
+      }
+
+      .form-group{
+        text-align: center;
+      }
+      h2{
+        text-align: center;
+      }
+    </style>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    
+  </head>
+  <body>
+
+    
+
+
+  <div class="form-group">
+    
+    <input type="text" class="col-md-6 mb-3" id="city-input" aria-describedby="emailHelp" placeholder="Enter city">
+    <small><p class="text-danger" id="city-error"></p></small>
+    <button id="button-btn" type="button" class="btn btn-outline-dark">Search</button>
+   
+   <br>
+   <br>
+
+
+   <div ><h2 id="bigCity"></h2></div>
+
+
+  <table  class="table table-hover" >
+  <thead>
+    <tr id="header">
+      <th scope="col">Date</th>
+      <th scope="col">Weather</th>
+      <th scope="col">Degree</th>
+      <th scope="col">Picture</th>
+    </tr>
+   
+    
+  </thead>
+  <tbody id="headTable">
+   
+    
+    
+  </tbody>
+</table>
+<div id="toggleBar">
+  
+</div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+   <script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  <script type="text/javascript">
+      
+
+      $(document).ready(function(){
+       $('#button-btn').click(function(){
+        $("#city-error").html("")
+
+        var cityName=$("#city-input").val()
+        var tableEl = $('#headTable')
+
+         $('#headTable').empty()
+
+        if(cityName !=""){   
+          $.getJSON('http://api.openweathermap.org/data/2.5/forecast/daily?q=' + cityName + '&cnt=10&appId=9fd7a449d055dba26a982a3220f32aa2',function(data,status){ 
+
+
+           var city=data["city"]
+
+           $("#bigCity").html(city["name"]+ "<br>" + city["country"] + "<br>" + city["population"])
+
+           var cloud=data["list"]
+           console.log(cloud)
+           console.log(city)
+
+           for(i=0;i<cloud.length;i++){
+
+            //to get the temp
+           var degr= cloud[i]["temp"]["day"] 
+           var min=degr - 273.15
+           var last=Math.round(min)
+           console.log (min)
+
+           //to get the date
+           var firstDate=cloud[i]["dt"]
+
+           //to get the icon 
+           var icon = cloud[i]['weather'][0]["icon"]
+
+
+          
+          var element = $('<tr> ');
+          var dateElement=$("<td>").text(new Date(firstDate));
+          var weatherElement = $("<td>").text(cloud[i]["weather"][0]["description"]);
+          var degreeElement = $("<td>").text(last + "\xBA" + "C");
+          var pictureElement=$("<td><img src=\x22"+"https://openweathermap.org/img/wn/"+ icon +"@2x.png\x22>");
+
+         
+         element.append(dateElement)
+         element.append(weatherElement)
+         element.append(degreeElement)
+         element.append(pictureElement)
+         $('#headTable').append(element)
+}
+    
+       
+
+       })
+    
+ 
+     }
+     else{
+      $("#city-error").html("Please enter a city!")
+
+     }
+     })
+     })
+    </script>
+
+
+
+  
+    
+
+   
+
+
+
+
+
+
+
+
+
+  
+  </body>
+
+
+</html>
